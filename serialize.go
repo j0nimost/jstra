@@ -2,19 +2,22 @@ package jstra
 
 import (
 	"bytes"
+	"errors"
 	"reflect"
 	"strings"
 )
 
-func Serialize(str interface{}) (string, bool) {
+func Serialize(str interface{}) (string, error) {
 	var json string
 
 	t := reflect.TypeOf(str)
 	v := reflect.ValueOf(str)
 	n := t.NumField()
 
+	// TODO: Support Struct Pointers
 	if t.Kind() != reflect.Struct {
-		return "", false
+		err := errors.New("type passed is not of type Struct or Struct Pointer")
+		return "", err
 	}
 
 	json += "{"
@@ -43,7 +46,7 @@ func Serialize(str interface{}) (string, bool) {
 
 	json += "}"
 
-	return json, true
+	return json, nil
 }
 
 func jsonFormarter(s string) string {
