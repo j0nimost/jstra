@@ -2,6 +2,7 @@ package jstra
 
 import (
 	"reflect"
+	"strings"
 )
 
 func Serialize(str interface{}) (string, bool) {
@@ -20,11 +21,13 @@ func Serialize(str interface{}) (string, bool) {
 		tt := t.Field(i)
 		vv := v.Field(i)
 
-		json += "\"" + tt.Name + "\":"
+		json += "\"" + strings.ToLower(tt.Name) + "\":"
 
 		switch tt.Type.Kind() {
 		case reflect.String:
 			json += "\"" + vv.String() + "\""
+		case reflect.Bool:
+			json += vv.String()
 		}
 		// get tt value, type and name
 		// concatenate into a string
