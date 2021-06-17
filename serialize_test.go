@@ -19,20 +19,20 @@ type Weather struct {
 func TestWithOnlyStrings(t *testing.T) {
 
 	exp := "{\"name\":\"John\"}"
-	act, ok := Serialize(Person{Name: "John"})
+	act, err := Serialize(Person{Name: "John"})
 
 	exp2 := "{\"name\":\"John\",\"location\":\"Thika\"}"
-	act2, ok2 := Serialize(Person2{Name: "John", Location: "Thika"})
+	act2, err2 := Serialize(Person2{Name: "John", Location: "Thika"})
 
-	if !ok {
-		t.Error("An Error Occured on TestWithOnlyStrings")
+	if err != nil {
+		t.Errorf(err.Error())
 	}
 
 	if exp != act {
 		t.Errorf("Serializing Struct: Resulted to %s instead of %s\n", act, exp)
 	}
 
-	if !ok2 {
+	if err2 != nil {
 		t.Error("An Error Occured on Person2")
 	}
 
@@ -44,10 +44,10 @@ func TestWithOnlyStrings(t *testing.T) {
 
 func TestWithStringsandBool(t *testing.T) {
 	exp := "{\"typeOfWeather\":\"Sunny\",\"isHumid\":false}"
-	act, ok := Serialize(Weather{TypeOfWeather: "Sunny", IsHumid: false})
+	act, err := Serialize(Weather{TypeOfWeather: "Sunny", IsHumid: false})
 
-	if !ok {
-		t.Error("An Error Occured on TestWithStringsandBool")
+	if err != nil {
+		t.Errorf(err.Error())
 	}
 
 	if exp != act {
