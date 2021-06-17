@@ -3,6 +3,7 @@ package jstra
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"reflect"
 	"strings"
 )
@@ -32,11 +33,9 @@ func Serialize(str interface{}) (string, error) {
 		case reflect.String:
 			json += "\"" + vv.String() + "\""
 		case reflect.Bool:
-			if vv.Bool() {
-				json += "true"
-			} else {
-				json += "false"
-			}
+			json += fmt.Sprintf("%v", vv)
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+			json += fmt.Sprintf("%v", vv)
 		}
 
 		if i < n-1 {
