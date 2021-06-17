@@ -1,6 +1,7 @@
 ## jstra
 Simple Package which Serializes Struct to Json
 
+[![Build Status](https://travis-ci.com/j0nimost/jstra.svg?token=zBU3HpXnQ9WSEWzAzXky&branch=main)](https://travis-ci.com/j0nimost/jstra)
 ### Sample
 Given a Struct
 
