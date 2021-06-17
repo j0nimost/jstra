@@ -40,6 +40,23 @@ func Serialize(str interface{}) (string, error) {
 			json += fmt.Sprintf("%v", vv)
 		case reflect.Float32, reflect.Float64:
 			json += fmt.Sprintf("%v", vv)
+		case reflect.Slice:
+			st := tt.Type.Elem()
+
+			json += "["
+
+			for x := 0; x < vv.Len(); x++ {
+				if st.Kind() == reflect.String {
+					json += fmt.Sprintf("\"%v\"", vv.Index(x))
+				}
+
+				if x < vv.Len()-1 {
+					json += ","
+				}
+			}
+
+			json += "]"
+
 		}
 
 		if i < n-1 {
@@ -61,4 +78,8 @@ func jsonFormarter(s string) string {
 	r := b[1:]
 	lc := bytes.ToLower([]byte{b[0]})
 	return string(bytes.Join([][]byte{lc, r}, nil))
+}
+
+func jsonStringArray(arr []string) {
+
 }
