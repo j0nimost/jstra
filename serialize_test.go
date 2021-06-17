@@ -16,6 +16,14 @@ type Weather struct {
 	IsHumid       bool
 }
 
+type Catalogue struct {
+	Id        int64
+	Item      string
+	IsInStock bool
+	Quantity  int32
+	Review    int8
+}
+
 func TestWithOnlyStrings(t *testing.T) {
 
 	exp := "{\"name\":\"John\"}"
@@ -45,6 +53,19 @@ func TestWithOnlyStrings(t *testing.T) {
 func TestWithStringsandBool(t *testing.T) {
 	exp := "{\"typeOfWeather\":\"Sunny\",\"isHumid\":false}"
 	act, err := Serialize(Weather{TypeOfWeather: "Sunny", IsHumid: false})
+
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	if exp != act {
+		t.Errorf("Serializing Struct: Resulted to %s instead of %s\n", act, exp)
+	}
+}
+
+func TestWithIntegers(t *testing.T) {
+	exp := "{\"id\":8223372036854775807,\"item\":\"Yves Saint Laurent\",\"isInStock\":true,\"quantity\":45,\"review\":-5}"
+	act, err := Serialize(Catalogue{Id: 8223372036854775807, Item: "Yves Saint Laurent", IsInStock: true, Quantity: 45, Review: -5})
 
 	if err != nil {
 		t.Errorf(err.Error())
