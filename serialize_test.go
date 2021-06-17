@@ -29,6 +29,10 @@ type FloatType struct {
 	Pi     float64
 }
 
+type SliceType struct {
+	Books []string
+}
+
 func TestWithOnlyStrings(t *testing.T) {
 
 	exp := "{\"name\":\"John\",\"location\":\"\"}"
@@ -100,6 +104,21 @@ func TestWithFloats(t *testing.T) {
 
 	if err != nil {
 		t.Errorf(err.Error())
+	}
+
+	if exp != act {
+		t.Errorf("Serializing Struct: Resulted to %s instead of %s\n", act, exp)
+	}
+}
+
+func TestWithSlices(t *testing.T) {
+	exp := "{\"books\":[\"Old McDonald Had A Farm\",\"Calculus I\"]}"
+
+	book := []string{"Old McDonald Had A Farm", "Calculus I"}
+	act, err := Serialize(SliceType{Books: book})
+
+	if err != nil {
+		t.Error(err.Error())
 	}
 
 	if exp != act {
