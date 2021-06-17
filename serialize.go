@@ -38,6 +38,8 @@ func Serialize(str interface{}) (string, error) {
 			json += fmt.Sprintf("%v", vv)
 		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
 			json += fmt.Sprintf("%v", vv)
+		case reflect.Float32, reflect.Float64:
+			json += fmt.Sprintf("%v", vv)
 		}
 
 		if i < n-1 {

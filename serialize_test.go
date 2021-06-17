@@ -2,43 +2,40 @@ package jstra
 
 import "testing"
 
-type Person struct {
-	Name string
-}
-
-type Person2 struct {
+type StringType struct {
 	Name     string
 	Location string
 }
 
-type Weather struct {
-	TypeOfWeather string
-	IsHumid       bool
+type BoolType struct {
+	IsHumid bool
 }
 
-type Catalogue struct {
-	Id        int64
-	Item      string
-	IsInStock bool
-	Quantity  int32
-	Review    int8
+type IntType struct {
+	Id       int64
+	Quantity int32
+	Review   int8
 }
 
-type Catalogue2 struct {
-	Id        uint64
-	Item      string
-	IsInStock bool
-	Quantity  int32
-	Review    uint8
+type UIntType struct {
+	Id       uint64
+	Quantity uint32
+	Review   uint8
+}
+
+type FloatType struct {
+	Credit float32
+	Debit  float32
+	Pi     float64
 }
 
 func TestWithOnlyStrings(t *testing.T) {
 
-	exp := "{\"name\":\"John\"}"
-	act, err := Serialize(Person{Name: "John"})
+	exp := "{\"name\":\"John\",\"location\":\"\"}"
+	act, err := Serialize(StringType{Name: "John"})
 
 	exp2 := "{\"name\":\"John\",\"location\":\"Thika\"}"
-	act2, err2 := Serialize(Person2{Name: "John", Location: "Thika"})
+	act2, err2 := Serialize(StringType{Name: "John", Location: "Thika"})
 
 	if err != nil {
 		t.Errorf(err.Error())
@@ -59,8 +56,8 @@ func TestWithOnlyStrings(t *testing.T) {
 }
 
 func TestWithStringsandBool(t *testing.T) {
-	exp := "{\"typeOfWeather\":\"Sunny\",\"isHumid\":false}"
-	act, err := Serialize(Weather{TypeOfWeather: "Sunny", IsHumid: false})
+	exp := "{\"isHumid\":false}"
+	act, err := Serialize(BoolType{IsHumid: false})
 
 	if err != nil {
 		t.Errorf(err.Error())
@@ -72,11 +69,11 @@ func TestWithStringsandBool(t *testing.T) {
 }
 
 func TestWithIntegers(t *testing.T) {
-	exp := "{\"id\":-8223372036854775807,\"item\":\"Yves Saint Laurent\",\"isInStock\":true,\"quantity\":45,\"review\":-5}"
-	exp2 := "{\"id\":8223372036854775807,\"item\":\"Yves Saint Laurent\",\"isInStock\":true,\"quantity\":45,\"review\":5}"
+	exp := "{\"id\":-8223372036854775807,\"quantity\":45,\"review\":-5}"
+	exp2 := "{\"id\":8223372036854775807,\"quantity\":45,\"review\":5}"
 
-	act, err := Serialize(Catalogue{Id: -8223372036854775807, Item: "Yves Saint Laurent", IsInStock: true, Quantity: 45, Review: -5})
-	act2, err2 := Serialize(Catalogue{Id: 8223372036854775807, Item: "Yves Saint Laurent", IsInStock: true, Quantity: 45, Review: 5})
+	act, err := Serialize(IntType{Id: -8223372036854775807, Quantity: 45, Review: -5})
+	act2, err2 := Serialize(UIntType{Id: 8223372036854775807, Quantity: 45, Review: 5})
 
 	if err != nil {
 		t.Errorf(err.Error())
@@ -92,5 +89,20 @@ func TestWithIntegers(t *testing.T) {
 
 	if exp2 != act2 {
 		t.Errorf("Serializing Struct: Resulted to %s instead of %s\n", act2, exp2)
+	}
+}
+
+func TestWithFloats(t *testing.T) {
+	exp := "{\"credit\":1538.65,\"debit\":545.35,\"pi\":3.142857142857143}"
+
+	p := 22.0 / 7.0
+	act, err := Serialize(FloatType{Credit: 1538.65, Debit: 545.35, Pi: p})
+
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	if exp != act {
+		t.Errorf("Serializing Struct: Resulted to %s instead of %s\n", act, exp)
 	}
 }
