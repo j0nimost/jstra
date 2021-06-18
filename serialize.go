@@ -46,9 +46,15 @@ func Serialize(str interface{}) (string, error) {
 			json += "["
 
 			for x := 0; x < vv.Len(); x++ {
-				if st.Kind() == reflect.String {
+				switch st.Kind() {
+				case reflect.String:
 					json += fmt.Sprintf("\"%v\"", vv.Index(x))
+				case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64, reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+					json += fmt.Sprintf("%v", vv.Index(x))
 				}
+				// if st.Kind() == reflect.String {
+				// 	json += fmt.Sprintf("\"%v\"", vv.Index(x))
+				// } else if st.Kind() ==re
 
 				if x < vv.Len()-1 {
 					json += ","
