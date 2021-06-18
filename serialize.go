@@ -3,6 +3,7 @@ package jstra
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"reflect"
 	"strings"
 )
@@ -32,11 +33,34 @@ func Serialize(str interface{}) (string, error) {
 		case reflect.String:
 			json += "\"" + vv.String() + "\""
 		case reflect.Bool:
-			if vv.Bool() {
-				json += "true"
-			} else {
-				json += "false"
+			json += fmt.Sprintf("%v", vv)
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+			json += fmt.Sprintf("%v", vv)
+		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+			json += fmt.Sprintf("%v", vv)
+		case reflect.Float32, reflect.Float64:
+			json += fmt.Sprintf("%v", vv)
+		case reflect.Slice:
+			st := tt.Type.Elem()
+
+			json += "["
+
+			for x := 0; x < vv.Len(); x++ {
+				switch st.Kind() {
+				case reflect.String:
+					json += fmt.Sprintf("\"%v\"", vv.Index(x))
+				case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64, reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+					json += fmt.Sprintf("%v", vv.Index(x))
+				case reflect.Float32, reflect.Float64:
+					json += fmt.Sprintf("%v", vv.Index(x))
+				}
+				if x < vv.Len()-1 {
+					json += ","
+				}
 			}
+
+			json += "]"
+
 		}
 
 		if i < n-1 {
@@ -58,4 +82,8 @@ func jsonFormarter(s string) string {
 	r := b[1:]
 	lc := bytes.ToLower([]byte{b[0]})
 	return string(bytes.Join([][]byte{lc, r}, nil))
+}
+
+func jsonStringArray(arr []string) {
+
 }
