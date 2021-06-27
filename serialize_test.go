@@ -36,6 +36,22 @@ type SliceType struct {
 	Distances  []float32
 }
 
+type B struct {
+	X int
+	Y int
+}
+
+type A struct {
+	Name string
+	B
+}
+
+type C struct {
+	IsScalar bool
+	A
+	IsVector bool // to test if order persists
+}
+
 func TestWithOnlyStrings(t *testing.T) {
 
 	exp := "{\"name\":\"John\",\"location\":\"\"}"
@@ -130,5 +146,33 @@ func TestWithSlices(t *testing.T) {
 
 	if exp != act {
 		t.Errorf("Serializing Struct: Resulted to %s instead of %s\n", act, exp)
+	}
+}
+
+func TestWithNestedStructs(t *testing.T) {
+	exp := "{\"name\":\"Triange\",\"b\":{\"x\":12,\"y\":24}}"
+	exp1 := "{\"isScalar\":true,\"a\":{\"name\":\"Triange\",\"b\":{\"x\":12,\"y\":24}},\"isVector\":false}"
+	b := B{X: 12, Y: 24}
+	a := A{Name: "Triange", B: b}
+
+	c := C{IsScalar: true, A: a, IsVector: false}
+
+	act, err := Serialize(a)
+	act1, err1 := Serialize(c)
+
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	if err1 != nil {
+		t.Error(err1.Error())
+	}
+
+	if exp != act {
+		t.Errorf("Serializing Nested Structs: Resulted to %s instead of %s\n", act, exp)
+	}
+
+	if exp1 != act1 {
+		t.Errorf("Serializing Nested Structs: Resulted to %s instead of %s\n", act1, exp1)
 	}
 }
