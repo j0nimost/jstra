@@ -46,13 +46,8 @@ func (js *jstraSerialize) Serializer(str interface{}) (string, error) {
 		switch tt.Type.Kind() {
 		case reflect.String:
 			js.json += "\"" + vv.String() + "\""
-		case reflect.Bool:
-			js.json += fmt.Sprintf("%v", vv)
-		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-			js.json += fmt.Sprintf("%v", vv)
-		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-			js.json += fmt.Sprintf("%v", vv)
-		case reflect.Float32, reflect.Float64:
+		case reflect.Bool, reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
+			reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Float32, reflect.Float64:
 			js.json += fmt.Sprintf("%v", vv)
 		case reflect.Slice:
 			st := tt.Type.Elem()
