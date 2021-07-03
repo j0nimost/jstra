@@ -1,5 +1,5 @@
 ## jstra
-Simple Package which Serializes Struct to Json
+Simple Package Prof of Concept Library which Serializes Structs to Json
 
 [![Build Status](https://travis-ci.com/j0nimost/jstra.svg?token=zBU3HpXnQ9WSEWzAzXky&branch=main)](https://travis-ci.com/j0nimost/jstra)
 ### Sample
@@ -19,9 +19,8 @@ You implement the package like so
 func main() {
 	s, k := jstra.Serialize(Person{Name: "John"})
 
-	if !k {
-		fmt.Print("Error\n")
-		return
+	if k != nil {
+		fmt.Println(k)
 	}
 
 	fmt.Println(s)
@@ -37,8 +36,16 @@ It gives the following output
 {"name":"John"}
 ```
 
+### Types Supported
+- Bool
+- Ints
+- UInts
+- Strings
+- Slices (except Struct Slices)
+- Nested Structs
+
 ### Contribution
-FORK and HACK
+FORK and HACK 
 
 ### Author
 John Nyingi
