@@ -52,6 +52,10 @@ type C struct {
 	IsVector bool // to test if order persists
 }
 
+type D struct {
+	Bs []B
+}
+
 func TestWithOnlyStrings(t *testing.T) {
 
 	exp := "{\"name\":\"John\",\"location\":\"\"}"
@@ -152,13 +156,21 @@ func TestWithSlices(t *testing.T) {
 func TestWithNestedStructs(t *testing.T) {
 	exp := "{\"name\":\"Triange\",\"b\":{\"x\":12,\"y\":24}}"
 	exp1 := "{\"isScalar\":true,\"a\":{\"name\":\"Triange\",\"b\":{\"x\":12,\"y\":24}},\"isVector\":false}"
+	exp2 := "{\"bs\":[{\"x\":12,\"y\":24},{\"x\":13,\"y\":14},{\"x\":15,\"y\":64}]}"
 	b := B{X: 12, Y: 24}
 	a := A{Name: "Triange", B: b}
 
 	c := C{IsScalar: true, A: a, IsVector: false}
 
+	d := D{Bs: []B{
+		{X: 12, Y: 24},
+		{X: 13, Y: 14},
+		{X: 15, Y: 64},
+	}}
+
 	act, err := Serialize(a)
 	act1, err1 := Serialize(c)
+	act2, err2 := Serialize(d)
 
 	if err != nil {
 		t.Error(err.Error())
@@ -168,11 +180,19 @@ func TestWithNestedStructs(t *testing.T) {
 		t.Error(err1.Error())
 	}
 
+	if err2 != nil {
+		t.Error(err2.Error())
+	}
+
 	if exp != act {
 		t.Errorf("Serializing Nested Structs: Resulted to %s instead of %s\n", act, exp)
 	}
 
 	if exp1 != act1 {
 		t.Errorf("Serializing Nested Structs: Resulted to %s instead of %s\n", act1, exp1)
+	}
+
+	if exp2 != act2 {
+		t.Errorf("Serializing Nested Structs: Resulted to %s instead of %s\n", act2, exp2)
 	}
 }

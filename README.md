@@ -41,7 +41,7 @@ It gives the following output
 - Ints
 - UInts
 - Strings
-- Slices (except Struct Slices)
+- Slices (ints, uints, floats, structs)
 - Nested Structs
 
 ### Contribution
