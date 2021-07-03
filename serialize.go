@@ -58,9 +58,9 @@ func (js *jstraSerialize) Serializer(str interface{}) (string, error) {
 				switch st.Kind() {
 				case reflect.String:
 					js.json += fmt.Sprintf("\"%v\"", vv.Index(x))
-				case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64, reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-					js.json += fmt.Sprintf("%v", vv.Index(x))
-				case reflect.Float32, reflect.Float64:
+				case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
+					reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64,
+					reflect.Float32, reflect.Float64:
 					js.json += fmt.Sprintf("%v", vv.Index(x))
 				}
 				if x < vv.Len()-1 {
