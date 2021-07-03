@@ -30,6 +30,7 @@ func (js *jstraSerialize) Serializer(str interface{}) (string, error) {
 	n := t.NumField()
 
 	// TODO Support Struct Pointers
+
 	if t.Kind() != reflect.Struct {
 		err := errors.New("type passed is not of type Struct or Struct Pointer")
 		return "", err
@@ -62,6 +63,8 @@ func (js *jstraSerialize) Serializer(str interface{}) (string, error) {
 					reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64,
 					reflect.Float32, reflect.Float64:
 					js.json += fmt.Sprintf("%v", vv.Index(x))
+				case reflect.Struct:
+					js.Serializer(vv.Index(x).Interface())
 				}
 				if x < vv.Len()-1 {
 					js.json += ","
