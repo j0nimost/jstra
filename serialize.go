@@ -28,7 +28,26 @@ func (js *jstraSerialize) Serializer(str interface{}) (string, error) {
 	t := reflect.TypeOf(str)
 	v := reflect.ValueOf(str)
 
-	if t.Kind() == reflect.Ptr {
+	if t.Kind() == reflect.Slice {
+		st := t.Elem()
+
+		js.json += "["
+		for x := 0; x < v.Len(); x++ {
+			switch st.Kind() {
+			case reflect.Struct:
+				js.Serializer(v.Index(x).Interface())
+			default:
+				err := errors.New("slice type passed is not of type Struct or Struct Pointer")
+				return "", err
+			}
+			if x < v.Len()-1 {
+				js.json += ","
+			}
+
+		}
+		js.json += "]"
+
+	} else if t.Kind() == reflect.Ptr {
 		p := reflect.Indirect(v)
 		js.Serializer(p.Interface())
 
