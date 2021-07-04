@@ -211,3 +211,32 @@ func TestWithStructPointer(t *testing.T) {
 		t.Errorf("Serializing Nested Structs: Resulted to %s instead of %s\n", act, exp)
 	}
 }
+
+func TestWithStructSlices(t *testing.T) {
+	exp := "[{\"x\":23,\"y\":43},{\"x\":12,\"y\":24},{\"x\":13,\"y\":14},{\"x\":15,\"y\":64}]"
+	exp1 := "[{\"x\":23,\"y\":43},{\"x\":12,\"y\":24},{\"x\":13,\"y\":14},{\"x\":15,\"y\":64}]"
+	b := []B{
+		{X: 23, Y: 43},
+		{X: 12, Y: 24},
+		{X: 13, Y: 14},
+		{X: 15, Y: 64}}
+
+	act, err := Serialize(b)
+	act1, err1 := Serialize(&b)
+
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	if err1 != nil {
+		t.Error(err.Error())
+	}
+
+	if exp != act {
+		t.Errorf("Serializing Struct Slices: Resulted to %s instead of %s\n", act, exp)
+	}
+
+	if exp1 != act1 {
+		t.Errorf("Serializing Struct Slices: Resulted to %s instead of %s\n", act, exp)
+	}
+}
