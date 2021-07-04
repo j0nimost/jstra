@@ -196,3 +196,18 @@ func TestWithNestedStructs(t *testing.T) {
 		t.Errorf("Serializing Nested Structs: Resulted to %s instead of %s\n", act2, exp2)
 	}
 }
+
+func TestWithStructPointer(t *testing.T) {
+	exp := "{\"x\":23,\"y\":43}"
+	b := B{X: 23, Y: 43}
+
+	act, err := Serialize(&b)
+
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	if exp != act {
+		t.Errorf("Serializing Nested Structs: Resulted to %s instead of %s\n", act, exp)
+	}
+}

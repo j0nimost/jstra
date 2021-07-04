@@ -43,6 +43,7 @@ It gives the following output
 - Strings
 - Slices (ints, uints, floats, structs)
 - Nested Structs
+- Struct Pointers
 
 ### Contribution
 FORK and HACK 
