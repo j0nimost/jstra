@@ -197,7 +197,7 @@ func TestWithNestedStructs(t *testing.T) {
 	}
 }
 
-func TestWithPointerStructs(t *testing.T) {
+func TestWithStructPointer(t *testing.T) {
 	exp := "{\"x\":23,\"y\":43}"
 	b := B{X: 23, Y: 43}
 
