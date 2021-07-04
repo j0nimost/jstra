@@ -44,6 +44,7 @@ It gives the following output
 - Slices (ints, uints, floats, structs)
 - Nested Structs
 - Struct Pointers
+- Struct Slices
 
 ### Contribution
 FORK and HACK 
