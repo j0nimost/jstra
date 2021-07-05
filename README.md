@@ -1,5 +1,5 @@
 ## jstra
-Simple Package Prof of Concept Library which Serializes Structs to Json
+A small Library Which Parses Structs to Json
 
 [![Build Status](https://travis-ci.com/j0nimost/jstra.svg?token=zBU3HpXnQ9WSEWzAzXky&branch=main)](https://travis-ci.com/j0nimost/jstra)
 
