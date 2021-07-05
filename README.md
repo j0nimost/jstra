@@ -2,6 +2,17 @@
 Simple Package Prof of Concept Library which Serializes Structs to Json
 
 [![Build Status](https://travis-ci.com/j0nimost/jstra.svg?token=zBU3HpXnQ9WSEWzAzXky&branch=main)](https://travis-ci.com/j0nimost/jstra)
+
+### Types Supported
+- Bool
+- Ints
+- UInts
+- Strings
+- Slices (ints, uints, strings, floats, structs)
+- Nested Structs
+- Struct Pointers
+- Struct Slices
+
 ### Sample
 Given a Struct
 
@@ -35,16 +46,6 @@ It gives the following output
 
 {"name":"John"}
 ```
-
-### Types Supported
-- Bool
-- Ints
-- UInts
-- Strings
-- Slices (ints, uints, floats, structs)
-- Nested Structs
-- Struct Pointers
-- Struct Slices
 
 ### Contribution
 FORK and HACK 
