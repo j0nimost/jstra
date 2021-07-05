@@ -73,7 +73,7 @@ func TestWithOnlyStrings(t *testing.T) {
 	}
 
 	if err2 != nil {
-		t.Error("An Error Occured on Person2")
+		t.Error(err2.Error())
 	}
 
 	if exp2 != act2 {
