@@ -15,7 +15,7 @@ type jstraSerialize struct {
 func Serialize(str interface{}) (string, error) {
 	js := newJstraSerialize()
 
-	return js.Serializer(str)
+	return js.serializer(str)
 
 }
 
@@ -23,7 +23,7 @@ func newJstraSerialize() *jstraSerialize {
 	return &jstraSerialize{json: ""}
 }
 
-func (js *jstraSerialize) Serializer(str interface{}) (string, error) {
+func (js *jstraSerialize) serializer(str interface{}) (string, error) {
 
 	t := reflect.TypeOf(str)
 	v := reflect.ValueOf(str)
@@ -35,7 +35,7 @@ func (js *jstraSerialize) Serializer(str interface{}) (string, error) {
 		for x := 0; x < v.Len(); x++ {
 			switch st.Kind() {
 			case reflect.Struct:
-				js.Serializer(v.Index(x).Interface())
+				js.serializer(v.Index(x).Interface())
 			default:
 				err := errors.New("slice type passed is not of type Struct or Struct Pointer")
 				return "", err
@@ -49,7 +49,7 @@ func (js *jstraSerialize) Serializer(str interface{}) (string, error) {
 
 	} else if t.Kind() == reflect.Ptr {
 		p := reflect.Indirect(v)
-		js.Serializer(p.Interface())
+		js.serializer(p.Interface())
 
 	} else if t.Kind() == reflect.Struct {
 		n := t.NumField()
@@ -82,7 +82,7 @@ func (js *jstraSerialize) Serializer(str interface{}) (string, error) {
 						reflect.Float32, reflect.Float64:
 						js.json += fmt.Sprintf("%v", vv.Index(x))
 					case reflect.Struct:
-						js.Serializer(vv.Index(x).Interface())
+						js.serializer(vv.Index(x).Interface())
 					}
 					if x < vv.Len()-1 {
 						js.json += ","
@@ -92,7 +92,7 @@ func (js *jstraSerialize) Serializer(str interface{}) (string, error) {
 				js.json += "]"
 
 			case reflect.Struct:
-				js.Serializer(vv.Interface())
+				js.serializer(vv.Interface())
 			}
 
 			if i < n-1 {
