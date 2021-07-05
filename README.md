@@ -19,7 +19,10 @@ Given a Struct
 ```go
 
 type Person struct {
-	Name string
+	Name     string
+	Age      uint
+	Contacts []string
+	NetPay   float64
 }
 ```
 
@@ -28,23 +31,29 @@ You implement the package like so
 ```go
 
 func main() {
-	s, k := jstra.Serialize(Person{Name: "John"})
 
-	if k != nil {
-		fmt.Println(k)
+	fmt.Println("Serialize")
+	p := Person{Name: "Ken Alex", Age: 24, Contacts: []string{"02323232", "23232533"}, NetPay: 2000.50}
+	json, err := jstra.Serialize(&p)
+
+	if err != nil {
+		panic(err)
 	}
 
-	fmt.Println(s)
+	fmt.Println(json)
 }
-
 ```
 
 
 It gives the following output
 
 ```json
-
-{"name":"John"}
+{
+	"name": "Ken Alex",
+	"age": 24,
+	"contacts": ["02323232", "23232533"],
+	"netPay": 2000.5
+}
 ```
 
 ### Contribution
