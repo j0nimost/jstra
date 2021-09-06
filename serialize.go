@@ -83,7 +83,3 @@ func jsonFormarter(s string) string {
 	lc := bytes.ToLower([]byte{b[0]})
 	return string(bytes.Join([][]byte{lc, r}, nil))
 }
-
-func jsonStringArray(arr []string) {
-
-}
