@@ -9,7 +9,7 @@ import (
 )
 
 func Serialize(str interface{}) (string, error) {
-	var json string
+	var json strings.Builder
 
 	t := reflect.TypeOf(str)
 	v := reflect.ValueOf(str)
@@ -21,56 +21,56 @@ func Serialize(str interface{}) (string, error) {
 		return "", err
 	}
 
-	json += "{"
+	json.WriteString("{")
 	// iterate through the fields
 	for i := 0; i < n; i++ {
 		tt := t.Field(i)
 		vv := v.Field(i)
 
-		json += "\"" + jsonFormarter(tt.Name) + "\":"
+		json.WriteString("\"" + jsonFormarter(tt.Name) + "\":")
 
 		switch tt.Type.Kind() {
 		case reflect.String:
-			json += "\"" + vv.String() + "\""
+			json.WriteString("\"" + vv.String() + "\"")
 		case reflect.Bool:
-			json += fmt.Sprintf("%v", vv)
+			json.WriteString(fmt.Sprintf("%v", vv))
 		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-			json += fmt.Sprintf("%v", vv)
+			json.WriteString(fmt.Sprintf("%v", vv))
 		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-			json += fmt.Sprintf("%v", vv)
+			json.WriteString(fmt.Sprintf("%v", vv))
 		case reflect.Float32, reflect.Float64:
-			json += fmt.Sprintf("%v", vv)
+			json.WriteString(fmt.Sprintf("%v", vv))
 		case reflect.Slice:
 			st := tt.Type.Elem()
 
-			json += "["
+			json.WriteString("[")
 
 			for x := 0; x < vv.Len(); x++ {
 				switch st.Kind() {
 				case reflect.String:
-					json += fmt.Sprintf("\"%v\"", vv.Index(x))
+					json.WriteString(fmt.Sprintf("\"%v\"", vv.Index(x)))
 				case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64, reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-					json += fmt.Sprintf("%v", vv.Index(x))
+					json.WriteString(fmt.Sprintf("%v", vv.Index(x)))
 				case reflect.Float32, reflect.Float64:
-					json += fmt.Sprintf("%v", vv.Index(x))
+					json.WriteString(fmt.Sprintf("%v", vv.Index(x)))
 				}
 				if x < vv.Len()-1 {
-					json += ","
+					json.WriteString(",")
 				}
 			}
 
-			json += "]"
+			json.WriteString("]")
 
 		}
 
 		if i < n-1 {
-			json += ","
+			json.WriteString(",")
 		}
 	}
 
-	json += "}"
+	json.WriteString("}")
 
-	return json, nil
+	return json.String(), nil
 }
 
 func jsonFormarter(s string) string {
