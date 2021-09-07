@@ -36,6 +36,26 @@ type SliceType struct {
 	Distances  []float32
 }
 
+type B struct {
+	X int
+	Y int
+}
+
+type A struct {
+	Name string
+	B
+}
+
+type C struct {
+	IsScalar bool
+	A
+	IsVector bool // to test if order persists
+}
+
+type D struct {
+	Bs []B
+}
+
 func TestWithOnlyStrings(t *testing.T) {
 
 	exp := "{\"name\":\"John\",\"location\":\"\"}"
@@ -53,7 +73,7 @@ func TestWithOnlyStrings(t *testing.T) {
 	}
 
 	if err2 != nil {
-		t.Error("An Error Occured on Person2")
+		t.Error(err2.Error())
 	}
 
 	if exp2 != act2 {
@@ -130,5 +150,93 @@ func TestWithSlices(t *testing.T) {
 
 	if exp != act {
 		t.Errorf("Serializing Struct: Resulted to %s instead of %s\n", act, exp)
+	}
+}
+
+func TestWithNestedStructs(t *testing.T) {
+	exp := "{\"name\":\"Triange\",\"b\":{\"x\":12,\"y\":24}}"
+	exp1 := "{\"isScalar\":true,\"a\":{\"name\":\"Triange\",\"b\":{\"x\":12,\"y\":24}},\"isVector\":false}"
+	exp2 := "{\"bs\":[{\"x\":12,\"y\":24},{\"x\":13,\"y\":14},{\"x\":15,\"y\":64}]}"
+	b := B{X: 12, Y: 24}
+	a := A{Name: "Triange", B: b}
+
+	c := C{IsScalar: true, A: a, IsVector: false}
+
+	d := D{Bs: []B{
+		{X: 12, Y: 24},
+		{X: 13, Y: 14},
+		{X: 15, Y: 64},
+	}}
+
+	act, err := Serialize(a)
+	act1, err1 := Serialize(c)
+	act2, err2 := Serialize(d)
+
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	if err1 != nil {
+		t.Error(err1.Error())
+	}
+
+	if err2 != nil {
+		t.Error(err2.Error())
+	}
+
+	if exp != act {
+		t.Errorf("Serializing Nested Structs: Resulted to %s instead of %s\n", act, exp)
+	}
+
+	if exp1 != act1 {
+		t.Errorf("Serializing Nested Structs: Resulted to %s instead of %s\n", act1, exp1)
+	}
+
+	if exp2 != act2 {
+		t.Errorf("Serializing Nested Structs: Resulted to %s instead of %s\n", act2, exp2)
+	}
+}
+
+func TestWithStructPointer(t *testing.T) {
+	exp := "{\"x\":23,\"y\":43}"
+	b := B{X: 23, Y: 43}
+
+	act, err := Serialize(&b)
+
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	if exp != act {
+		t.Errorf("Serializing Nested Structs: Resulted to %s instead of %s\n", act, exp)
+	}
+}
+
+func TestWithStructSlices(t *testing.T) {
+	exp := "[{\"x\":23,\"y\":43},{\"x\":12,\"y\":24},{\"x\":13,\"y\":14},{\"x\":15,\"y\":64}]"
+	exp1 := "[{\"x\":23,\"y\":43},{\"x\":12,\"y\":24},{\"x\":13,\"y\":14},{\"x\":15,\"y\":64}]"
+	b := []B{
+		{X: 23, Y: 43},
+		{X: 12, Y: 24},
+		{X: 13, Y: 14},
+		{X: 15, Y: 64}}
+
+	act, err := Serialize(b)
+	act1, err1 := Serialize(&b)
+
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	if err1 != nil {
+		t.Error(err.Error())
+	}
+
+	if exp != act {
+		t.Errorf("Serializing Struct Slices: Resulted to %s instead of %s\n", act, exp)
+	}
+
+	if exp1 != act1 {
+		t.Errorf("Serializing Struct Slices: Resulted to %s instead of %s\n", act, exp)
 	}
 }
