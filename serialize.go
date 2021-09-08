@@ -74,7 +74,7 @@ func (js *jstraSerialize) serializer(str interface{}) (string, error) {
 	return js.json.String(), nil
 }
 
-func (js *jstraSerialize) arrays2Json(str interface{}) error {
+func (js *jstraSerialize) arrays2Json(str interface{}) {
 
 	t := reflect.TypeOf(str)
 	v := reflect.ValueOf(str)
@@ -84,7 +84,6 @@ func (js *jstraSerialize) arrays2Json(str interface{}) error {
 	js.json.WriteString("[")
 	defer js.json.WriteString("]")
 	for x := 0; x < v.Len(); x++ {
-		// fmt.Printf("\nWHAT ARE YOOOOOOO :%v\n", v.Index(x))
 		switch k {
 		case reflect.String:
 			js.json.WriteString(fmt.Sprintf("\"%v\"", v.Index(x)))
@@ -101,7 +100,6 @@ func (js *jstraSerialize) arrays2Json(str interface{}) error {
 		}
 	}
 
-	return nil
 }
 
 func jsonFormarter(s string) string {
