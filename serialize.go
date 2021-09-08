@@ -30,24 +30,7 @@ func (js *jstraSerialize) serializer(str interface{}) (string, error) {
 	v := reflect.ValueOf(str)
 
 	if t.Kind() == reflect.Slice {
-		st := t.Elem()
-
-		js.json.WriteString("[")
-		for x := 0; x < v.Len(); x++ {
-			switch st.Kind() {
-			case reflect.Struct:
-				js.serializer(v.Index(x).Interface())
-			default:
-				err := errors.New("slice type passed is not of type Struct or Struct Pointer")
-				return "", err
-			}
-			if x < v.Len()-1 {
-				js.json.WriteString(",")
-			}
-
-		}
-		js.json.WriteString("]")
-
+		js.arrays2Json(v.Interface())
 	} else if t.Kind() == reflect.Ptr {
 		p := reflect.Indirect(v)
 		js.serializer(p.Interface())
@@ -70,28 +53,7 @@ func (js *jstraSerialize) serializer(str interface{}) (string, error) {
 				reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Float32, reflect.Float64:
 				js.json.WriteString(fmt.Sprintf("%v", vv))
 			case reflect.Slice:
-				st := tt.Type.Elem()
-
-				js.json.WriteString("[")
-
-				for x := 0; x < vv.Len(); x++ {
-					switch st.Kind() {
-					case reflect.String:
-						js.json.WriteString(fmt.Sprintf("\"%v\"", vv.Index(x)))
-					case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
-						reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64,
-						reflect.Float32, reflect.Float64:
-						js.json.WriteString(fmt.Sprintf("%v", vv.Index(x)))
-					case reflect.Struct:
-						js.serializer(vv.Index(x).Interface())
-					}
-					if x < vv.Len()-1 {
-						js.json.WriteString(",")
-					}
-
-				}
-
-				js.json.WriteString("]")
+				js.arrays2Json(vv.Interface())
 
 			case reflect.Struct:
 				js.serializer(vv.Interface())
@@ -110,6 +72,36 @@ func (js *jstraSerialize) serializer(str interface{}) (string, error) {
 	}
 
 	return js.json.String(), nil
+}
+
+func (js *jstraSerialize) arrays2Json(str interface{}) error {
+
+	t := reflect.TypeOf(str)
+	v := reflect.ValueOf(str)
+
+	k := t.Elem().Kind()
+
+	js.json.WriteString("[")
+	defer js.json.WriteString("]")
+	for x := 0; x < v.Len(); x++ {
+		// fmt.Printf("\nWHAT ARE YOOOOOOO :%v\n", v.Index(x))
+		switch k {
+		case reflect.String:
+			js.json.WriteString(fmt.Sprintf("\"%v\"", v.Index(x)))
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
+			reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64,
+			reflect.Float32, reflect.Float64:
+			js.json.WriteString(fmt.Sprintf("%v", v.Index(x)))
+		case reflect.Struct:
+			js.serializer(v.Index(x).Interface())
+		}
+
+		if x < v.Len()-1 {
+			js.json.WriteString(",")
+		}
+	}
+
+	return nil
 }
 
 func jsonFormarter(s string) string {
