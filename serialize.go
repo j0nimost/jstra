@@ -38,17 +38,25 @@ func (js *jstraSerialize) serializer(str interface{}) (string, error) {
 	} else if t.Kind() == reflect.Struct {
 		n := t.NumField()
 
-		js.json.WriteString("{")
+		js.json.WriteByte('{')
 		// iterate through the fields
 		for i := 0; i < n; i++ {
 			tt := t.Field(i)
 			vv := v.Field(i)
 
-			js.json.WriteString("\"" + jsonFormarter(tt.Name) + "\":")
+			js.json.WriteByte('"')
+			js.json.Write(jsonFormarter(tt.Name))
+			js.json.WriteByte('"')
+			js.json.WriteByte(':')
 
 			switch tt.Type.Kind() {
+
 			case reflect.String:
-				js.json.WriteString("\"" + vv.String() + "\"")
+				js.json.WriteByte('"')
+				s := []byte(vv.String())
+				js.json.Write(s)
+				js.json.WriteByte('"')
+
 			case reflect.Bool, reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
 				reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Float32, reflect.Float64:
 				js.json.WriteString(fmt.Sprintf("%v", vv))
@@ -60,12 +68,12 @@ func (js *jstraSerialize) serializer(str interface{}) (string, error) {
 			}
 
 			if i < n-1 {
-				js.json.WriteString(",")
+				js.json.WriteByte(',')
 
 			}
 		}
 
-		js.json.WriteString("}")
+		js.json.WriteByte('}')
 	} else {
 		err := errors.New("type passed is not of type Struct or Struct Pointer")
 		return "", err
@@ -81,12 +89,16 @@ func (js *jstraSerialize) arrays2Json(str interface{}) {
 
 	k := t.Elem().Kind()
 
-	js.json.WriteString("[")
-	defer js.json.WriteString("]")
+	js.json.WriteByte('[')
+	defer js.json.WriteByte(']')
 	for x := 0; x < v.Len(); x++ {
 		switch k {
 		case reflect.String:
-			js.json.WriteString(fmt.Sprintf("\"%v\"", v.Index(x)))
+			// js.json.WriteString("\"" + v.Index(x).String() + "\"")
+			js.json.WriteByte('"')
+			s := []byte(v.Index(x).String())
+			js.json.Write(s)
+			js.json.WriteByte('"')
 		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
 			reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64,
 			reflect.Float32, reflect.Float64:
@@ -96,19 +108,20 @@ func (js *jstraSerialize) arrays2Json(str interface{}) {
 		}
 
 		if x < v.Len()-1 {
-			js.json.WriteString(",")
+			js.json.WriteByte(',')
 		}
 	}
 
 }
 
-func jsonFormarter(s string) string {
+func jsonFormarter(s string) []byte {
+	b := []byte(s)
+
 	if len(s) < 2 {
-		return strings.ToLower(s)
+		return bytes.ToLower(b)
 	}
 
-	b := []byte(s)
 	r := b[1:]
 	lc := bytes.ToLower([]byte{b[0]})
-	return string(bytes.Join([][]byte{lc, r}, nil))
+	return bytes.Join([][]byte{lc, r}, nil)
 }
